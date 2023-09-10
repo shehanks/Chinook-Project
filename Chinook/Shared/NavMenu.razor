@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Chinook.Helpers;
+@using Chinook.Common;
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Chinook</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -15,23 +18,21 @@
             </NavLink>
         </div>
         <div class="nav-item px-3">
-@* 
-            <NavLink class="nav-link" href="playlist/playlistnumber">
-                <i class="bi bi-music-note-list me-3" style="font-size: 1.25em"></i>My favorite tracks
-            </NavLink>
-*@
-</div>
+            @if (userPlaylists != null && userPlaylists.Any() && currentUserId != null)
+            {
+                foreach (var playList in userPlaylists)
+                {
+                    if (playList != null && playList.Playlist != null)
+                    {
+                        var playlistName = PlaylistHelper.GetVisibleFavoritePlaylistName(playList.Playlist.Name, currentUserId);
+
+                        <NavLink class="nav-link" href="@string.Format("playlist/{0}",playList.PlaylistId)">
+                            <i class="bi bi-music-note-list me-3" style="font-size: 1.25em"></i>@playlistName
+                        </NavLink>
+                    }                    
+                }
+            }
+        </div>
 
     </nav>
 </div>
-
-@code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-}
