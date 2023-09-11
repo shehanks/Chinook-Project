@@ -1,6 +1,12 @@
+using AutoMapper;
 using Chinook;
 using Chinook.Areas.Identity;
+using Chinook.AutoMapper;
 using Chinook.Models;
+using Chinook.Providers;
+using Chinook.Providers.Contracts;
+using Chinook.Services;
+using Chinook.Services.Contracts;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +23,24 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ChinookUser>>();
+
+builder.Services.AddScoped<IAlbumProvider, AlbumProvider>();
+builder.Services.AddScoped<IArtistProvider, ArtistProvider>();
+builder.Services.AddScoped<ITrackProvider, TrackProvider>();
+builder.Services.AddScoped<IPlaylistProvider, PlaylistProvider>();
+
+builder.Services.AddScoped<IArtistService, ArtistService>();
+builder.Services.AddScoped<IAlbumService, AlbumService>();
+builder.Services.AddScoped<ITrackService, TrackService>();
+builder.Services.AddScoped<IPlaylistService, PlaylistService>();
+builder.Services.AddScoped<IRefreshService, RefreshService>();
+
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new MappingProfile());
+});
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
 var app = builder.Build();
 
